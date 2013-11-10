@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "blitzcrank"
+unless File.exists?(File.join(Dir.home, ".blitzcrank"))
+  Blitzcrank.write_sample_config(File.join(Dir.home, ".blitzcrank"))
+  puts "Sample config writen to .blitzcrank"
+else
+  puts ".blitzcrank already exists"
+end

@@ -36,6 +36,10 @@ module Blitzcrank
     @config
   end
 
+  self.write_sample_config(yaml_path)
+    IO.write(yaml_path, @config.to_yaml)
+  end
+
   def self.transfer_file(remote_path, local_dir)
     system("rsync -av --bwlimit=2000 --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
   end
