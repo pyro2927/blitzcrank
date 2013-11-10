@@ -4,11 +4,32 @@
 
 Copy down remote files and sort them into local directories with ease.
 
+## Table of Contents
+* [Installation](#installation)
+* [Setup](#setup)
+    * [Sample Config File](#sample-config-file)
+    * [Sample Directory Structure](#sample-directory-structure)
+* [Usage](#usage)
+    * [Mana Barrier](#mana-barrier)
+    * [Rocket Grab](#rocket-grab)
+* [Contributing](#contributing)
+
+_Generated with [tocify](https://github.com/pyro2927/tocify)_
+
 ## Installation
 
 Install it with:
 
     $ gem install blitzcrank
+
+Blitzcrank transfers files via rsync.
+Install on OS X:
+
+    $ brew install rsync
+
+Install on Debian:
+
+    $ sudo apt-get install rsync
 
 ## Setup
 
