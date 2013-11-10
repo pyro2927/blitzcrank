@@ -1,12 +1,14 @@
 require "blitzcrank/version"
 require "colorize"
 require "yaml"
+require "imdb"
 
 module Blitzcrank
 
   # Configuration defaults
   @config = {
               :base_tv_dir => "",
+              :base_movie_dir => "",
               :season_identifier => "Season ",
               :remote_host => "localhost" ,
               :remote_user => %x[whoami],
@@ -86,9 +88,10 @@ module Blitzcrank
         season_dir = "#{Dir.pwd}/#{nice_name}/#{@config[:season_identifier]}#{Blitzcrank.season(file_name)}"
         Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
         Blitzcrank.transfer_file(full_path, season_dir)
+      elsif Blitzcrank.is_movie?(file_name)
+        Blitzcrank.transfer_file(full_path, @config[:base_movie_dir])
       end
     end
-
   end
 
   def self.season(file_name)
@@ -106,6 +109,14 @@ module Blitzcrank
       end
     end
     wordsInShowName.join(" ")
+  end
+
+  def self.is_movie?(file_name)
+    /^.*\.(\d{4})\./i.match(file_name)
+    movie_name = $1
+    nice_movie_name = movie_name.gsub('.', ' ').downcase.split(" ")
+    i = Imdb::Search.new(nice_movie_name)
+    i.movies.size > 0
   end
 
   def self.transfer_menu(files)

@@ -22,5 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
 
   spec.add_dependency("colorize", "0.6.0")
+  spec.add_dependency("imdb", "0.8.0")
 
 end
