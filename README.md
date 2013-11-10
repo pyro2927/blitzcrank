@@ -53,6 +53,7 @@ Movies are all contained in a single directory, so a folder structure isn't requ
 Mana Barrier will populate a sample config file if you do not have one already in place.  The location for this is in `~/.blitzcrank`.
 
 ### Rocket Grab
+![Blitz](./img/Rocket_Grab.jpg)
 
 	$ rocketgrab
 	$ rocketgrab "search1"
