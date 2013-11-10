@@ -38,12 +38,12 @@ module Blitzcrank
     @config
   end
 
-  self.write_sample_config(yaml_path)
+  def self.write_sample_config(yaml_path)
     IO.write(yaml_path, @config.to_yaml)
   end
 
   def self.transfer_file(remote_path, local_dir)
-    system("rsync -av --bwlimit=2000 --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    system("rsync -avz --bwlimit=2000 --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
   end
 
   def self.remote_video_file_list
@@ -100,21 +100,24 @@ module Blitzcrank
   end
 
   def self.nice_tv_name(file_name)
-    /(.*).s(\d*)e(\d*)/i.match(file_name)
-    oldShowName = $1
-    wordsInShowName = oldShowName.gsub('.', ' ').downcase.split(" ")
-    wordsInShowName.each do |word|
-      if wordsInShowName.index(word) == 0 || /^(in|a|the|and|on)$/i.match(word).nil?
-        word.capitalize!
+    unless /(.*).s(\d*)e(\d*)/i.match(file_name).nil?
+      oldShowName = $1
+      wordsInShowName = oldShowName.gsub('.', ' ').downcase.split(" ")
+      wordsInShowName.each do |word|
+        if wordsInShowName.index(word) == 0 || /^(in|a|the|and|on)$/i.match(word).nil?
+          word.capitalize!
+        end
       end
+      wordsInShowName.join(" ")
+    else
+      file_name
     end
-    wordsInShowName.join(" ")
   end
 
   def self.is_movie?(file_name)
-    /^.*\.(\d{4})\./i.match(file_name)
+    /^(.*).(\d{4}|dvdrip)/i.match(file_name)
     movie_name = $1
-    nice_movie_name = movie_name.gsub('.', ' ').downcase.split(" ")
+    nice_movie_name = movie_name.gsub('.', ' ').downcase
     i = Imdb::Search.new(nice_movie_name)
     i.movies.size > 0
   end
@@ -146,7 +149,6 @@ module Blitzcrank
         filesToTransfer.push(files[transfer_index - 1])
       end
     end while transfer_index > 0 && filesToTransfer.length < files.length
-
     filesToTransfer
   end
 
