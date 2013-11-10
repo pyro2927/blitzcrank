@@ -37,7 +37,7 @@ module Blitzcrank
   end
 
   def self.transfer_file(remote_path, local_dir)
-    system("scp \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    system("rsync -av --bwlimit=2000 --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
   end
 
   def self.remote_video_file_list
@@ -80,7 +80,6 @@ module Blitzcrank
       nice_name = Blitzcrank.nice_tv_name(file_name)
       if Dir.exists?(nice_name) # see if we already have a directory for this tv show
         season_dir = "#{Dir.pwd}/#{nice_name}/#{@config[:season_identifier]}#{Blitzcrank.season(file_name)}"
-        puts "Season_dir: #{season_dir}"
         Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
         Blitzcrank.transfer_file(full_path, season_dir)
       end
