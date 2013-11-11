@@ -76,6 +76,21 @@ module Blitzcrank
 
     filesToTransfer = Blitzcrank.transfer_menu(availableFiles)
 
+    Blitzcrank.transfer_files(filesToTransfer)
+  end
+
+  def self.rsync_all_files
+    puts "Downloading all remote videos\n"
+    fileArray = Blitzcrank.remote_video_file_list.gsub('./','').split("\n")
+    availableFiles = Array.new()
+    fileArray.each do |remoteFile|
+      availableFiles.push({:path => remoteFile, :name => remoteFile.split('/').last()})
+    end
+    Blitzcrank.transfer_files(availableFiles)
+  end
+
+  # any files (hashes) passed into here will be checked against our local TV folders and IMDB to see if it's a movie
+  def self.transfer_files(filesToTransfer)
     Dir.chdir(@config[:base_tv_dir])
     tv_directories = Dir.glob("*/")
 
@@ -115,11 +130,14 @@ module Blitzcrank
   end
 
   def self.is_movie?(file_name)
-    /^(.*).(\d{4}|dvdrip)/i.match(file_name)
-    movie_name = $1
-    nice_movie_name = movie_name.gsub('.', ' ').downcase
-    i = Imdb::Search.new(nice_movie_name)
-    i.movies.size > 0
+    unless /^(.*).(\d{4}|dvdrip)/i.match(file_name).nil?
+      movie_name = $1
+      nice_movie_name = movie_name.gsub('.', ' ').downcase
+      i = Imdb::Search.new(nice_movie_name)
+      i.movies.size > 0
+    else
+      false
+    end
   end
 
   def self.transfer_menu(files)

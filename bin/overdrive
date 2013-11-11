@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'blitzcrank'
+Blitzcrank.configure_with(File.join(Dir.home, ".blitzcrank")) if File.exists?(File.join(Dir.home, ".blitzcrank"))
+Blitzcrank.rsync_all_files
