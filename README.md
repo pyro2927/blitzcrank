@@ -90,7 +90,7 @@ Use `rocketgrab` to pull down remote files and sort them into local directories.
 ### Overdrive
 ![Blitz](./img/Overdrive.jpg)
 
-Overdrive is best suited for cron jobs and automated scheduling.  It copies down any TV shows that matchan existing folder, and any movies that are verified via [IMDB](http://www.imdb.com/).
+Overdrive is best suited for cron jobs and automated scheduling.  It copies down any TV shows that match an existing folder, and any movies that are verified via [IMDB](http://www.imdb.com/).
 
 ## Contributing
 
