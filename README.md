@@ -23,6 +23,7 @@ Install it with:
     $ gem install blitzcrank
 
 Blitzcrank transfers files via rsync.
+
 Install on OS X:
 
     $ brew install rsync
@@ -30,6 +31,10 @@ Install on OS X:
 Install on Debian:
 
     $ sudo apt-get install rsync
+
+## Recommendations
+
+Blitzcrank works best at pulling down torrents from a remote server.  Manually finding torrents is _SO_ 19th century.  Automatically fetch torrents with systems like [Sickbeard](http://sickbeard.com/) and [CouchPotato](https://couchpota.to/), trust me, it's awesome.
 
 ## Setup
 
