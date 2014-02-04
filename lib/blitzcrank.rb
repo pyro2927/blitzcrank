@@ -110,12 +110,12 @@ module Blitzcrank
   end
 
   def self.season(file_name)
-    /s(\d{2})e\d{2}/i.match(file_name)
+    /s?(\d{2})e?\d{2}/i.match(file_name)
     $1.gsub(/\A0+/, '')
   end
 
   def self.nice_tv_name(file_name)
-    unless /(.*).s(\d*)e(\d*)/i.match(file_name).nil?
+    unless /(.*).s?(\d{2})e?(\d{2})/i.match(file_name).nil?
       oldShowName = $1
       wordsInShowName = oldShowName.gsub('.', ' ').downcase.split(" ")
       wordsInShowName.each do |word|
