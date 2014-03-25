@@ -8,5 +8,5 @@ task :build do
 end
 
 task :install do
-    system "gem install blitzcrank-#{Blitzcrank::VERSION}.gem"
+    system "gem install --local ./blitzcrank-#{Blitzcrank::VERSION}.gem"
 end

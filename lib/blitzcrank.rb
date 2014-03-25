@@ -99,7 +99,9 @@ module Blitzcrank
       full_path = dh[:path]
       file_name = dh[:name]
       nice_name = Blitzcrank.nice_tv_name(file_name)
-      if Dir.exists?(nice_name) # see if we already have a directory for this tv show
+      directories = Dir.glob(nice_name, File::FNM_CASEFOLD)
+      if directories.count > 0 # see if we already have a directory for this tv show
+        nice_name = directories.first
         season_dir = "#{Dir.pwd}/#{nice_name}/#{@config[:season_identifier]}#{Blitzcrank.season(file_name)}"
         Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
         Blitzcrank.transfer_file(full_path, season_dir)
