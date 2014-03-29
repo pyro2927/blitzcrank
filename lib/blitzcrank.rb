@@ -43,7 +43,7 @@ module Blitzcrank
   end
 
   def self.transfer_file(remote_path, local_dir)
-    system("rsync -avz --bwlimit=2000 --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    system("rsync -avz #{ '--bwlimit=' + @config[:bwlimit] unless @config[:bwlimit].nil? } --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
   end
 
   def self.remote_video_file_list
