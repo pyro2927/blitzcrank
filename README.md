@@ -47,11 +47,12 @@ Blitzcrank requires a small amount of setup.  First, it mainly does transfers vi
 	$ cat ~/.blitzcrank
 	---
 	:base_tv_dir: "/Volumes/Public/TV Shows/"
+	:base_movie_dir: "/Volumes/Public/Movies/"
 	:remote_user: "root"
 	:remote_host: "subdomain.domain.tld"
 	:remote_base_dir: "~/torrents/"
 	
-This can be generated with [Mana Barrier](#mana-barrier)
+This can be generated with [Mana Barrier](#mana-barrier).  If you would also like to limit the connection speed rsync uses, add `:bwlimit: <kb/sec>`.  `:bwlimit: 2000` would limit transfer speeds to 2000kb/second.
 
 ### Sample Directory Structure
 
