@@ -46,6 +46,7 @@ module Blitzcrank
     system("rsync -avz #{ '--bwlimit=' + @config[:bwlimit] unless @config[:bwlimit].nil? } --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
   end
 
+  # get a listing of all remote files that would be considered "videos"
   def self.remote_video_file_list
       %x[ssh -q #{@config[:remote_user]}@#{@config[:remote_host]} "cd #{@config[:remote_base_dir]} && find . -type f \\( -iname \'*.avi\' -or -iname \'*.mkv\' -or -iname \'*.mp4\' -or -iname \'*.m4v\' -or -iname \'*.divx\' \\)"]
   end
@@ -79,6 +80,7 @@ module Blitzcrank
     Blitzcrank.transfer_files(filesToTransfer)
   end
 
+  # copies all files if they find a matching local directory
   def self.rsync_all_files
     puts "Downloading all remote videos\n"
     fileArray = Blitzcrank.remote_video_file_list.gsub('./','').split("\n")
@@ -92,7 +94,6 @@ module Blitzcrank
   # any files (hashes) passed into here will be checked against our local TV folders and IMDB to see if it's a movie
   def self.transfer_files(filesToTransfer)
     Dir.chdir(@config[:base_tv_dir])
-    tv_directories = Dir.glob("*/")
 
     filesToTransfer.each do |dh|
       Dir.chdir(@config[:base_tv_dir])
@@ -111,6 +112,7 @@ module Blitzcrank
     end
   end
 
+  # pulls the season number froma  file
   def self.season(file_name)
     /s?(\d{2})e?\d{2}/i.match(file_name)
     $1.gsub(/\A0+/, '')
@@ -125,7 +127,7 @@ module Blitzcrank
           word.capitalize!
         end
       end
-      wordsInShowName.join(" ")
+      wordsInShowName.join(" ").gsub!(/\b(us|uk)$/i, '(\1)') # adding parens around US/UK marked shows
     else
       file_name
     end
@@ -142,6 +144,7 @@ module Blitzcrank
     end
   end
 
+  # runs the interactive transfer menu, returns an array of files to download
   def self.transfer_menu(files)
     filesToTransfer = Array.new
     begin
