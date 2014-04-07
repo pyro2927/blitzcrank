@@ -127,7 +127,7 @@ module Blitzcrank
           word.capitalize!
         end
       end
-      wordsInShowName.join(" ").gsub!(/\b(us|uk)$/i, '(\1)') # adding parens around US/UK marked shows
+      wordsInShowName.join(" ").gsub(/\b(us|uk)$/i, '(\1)') # adding parens around US/UK marked shows
     else
       file_name
     end
