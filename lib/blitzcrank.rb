@@ -12,10 +12,13 @@ module Blitzcrank
               :season_identifier => "Season ",
               :remote_host => "localhost" ,
               :remote_user => %x[whoami],
-              :remote_base_dir => "~/"
+              :remote_base_dir => "~/",
+              :dry_run => false
             }
 
   @valid_config_keys = @config.keys
+
+  @tv_show_regex = /(.*)\.s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
 
   # Configure through hash
   def self.configure(opts = {})
@@ -43,7 +46,11 @@ module Blitzcrank
   end
 
   def self.transfer_file(remote_path, local_dir)
-    system("rsync -avz #{ '--bwlimit=' + @config[:bwlimit] unless @config[:bwlimit].nil? } --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    if @config[:dry_run]
+      puts "Copying #{remote_path} to #{local_dir}"
+    else
+      system("rsync -avz #{ '--bwlimit=' + @config[:bwlimit] unless @config[:bwlimit].nil? } --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    end
   end
 
   # get a listing of all remote files that would be considered "videos"
@@ -114,14 +121,14 @@ module Blitzcrank
 
   # pulls the season number froma  file
   def self.season(file_name)
-    /s?(\d{2})e?\d{2}/i.match(file_name)
-    $1.gsub(/\A0+/, '')
+    @tv_show_regex.match(file_name)
+    $2.gsub(/\A0+/, '')
   end
 
   def self.nice_tv_name(file_name)
-    unless /(.*).s?(\d{2})e?(\d{2})/i.match(file_name).nil?
-      oldShowName = $1
-      wordsInShowName = oldShowName.gsub('.', ' ').downcase.split(" ")
+    unless @tv_show_regex.match(file_name).nil?
+      showName = $1
+      wordsInShowName = showName.gsub(/[\._]/, ' ').downcase.split(" ") # strip . and _
       wordsInShowName.each do |word|
         if wordsInShowName.index(word) == 0 || /^(in|a|the|and|on)$/i.match(word).nil?
           word.capitalize!
