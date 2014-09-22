@@ -44,9 +44,8 @@ module Blitzcrank
   end
 
   def self.transfer_file(remote_path, local_dir)
-    if @config[:dry_run]
-      puts "Copying #{remote_path} to #{local_dir}"
-    else
+    puts "Copying #{remote_path} to #{local_dir}"
+    if !@config[:dry_run]
       system("rsync -avz #{ '--bwlimit=' + @config[:bwlimit] unless @config[:bwlimit].nil? } --progress --rsh='ssh' \"#{@config[:remote_user]}@#{@config[:remote_host]}:#{@config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
     end
   end
