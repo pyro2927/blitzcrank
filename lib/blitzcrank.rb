@@ -1,7 +1,7 @@
 require "blitzcrank/version"
+Dir['./lib/*.rb'].each {|f| require f }
 require "colorize"
 require "yaml"
-require "imdb"
 
 module Blitzcrank
 
@@ -17,8 +17,6 @@ module Blitzcrank
             }
 
   @valid_config_keys = @config.keys
-
-  @tv_show_regex = /(.*)\.s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
 
   # Configure through hash
   def self.configure(opts = {})
@@ -106,48 +104,16 @@ module Blitzcrank
       Dir.chdir(@config[:base_tv_dir])
       full_path = dh[:path]
       file_name = dh[:name]
-      nice_name = Blitzcrank.nice_tv_name(file_name)
-      directories = Dir.glob(nice_name, File::FNM_CASEFOLD)
-      if directories.count > 0 # see if we already have a directory for this tv show
+      video = Video.new file_name
+      directories = Dir.glob(video.nice_name, File::FNM_CASEFOLD)
+      if directories.count > 0 && video.is_tv_show?
         nice_name = directories.first
-        season_dir = "#{Dir.pwd}/#{nice_name}/#{@config[:season_identifier]}#{Blitzcrank.season(file_name)}"
+        season_dir = "#{Dir.pwd}/#{nice_name}/#{@config[:season_identifier]}#{video.season}"
         Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
         Blitzcrank.transfer_file(full_path, season_dir)
-      elsif Blitzcrank.is_movie?(file_name)
+      elsif video.is_movie?
         Blitzcrank.transfer_file(full_path, @config[:base_movie_dir])
       end
-    end
-  end
-
-  # pulls the season number froma  file
-  def self.season(file_name)
-    @tv_show_regex.match(file_name)
-    $2.gsub(/\A0+/, '')
-  end
-
-  def self.nice_tv_name(file_name)
-    unless @tv_show_regex.match(file_name).nil?
-      showName = $1
-      wordsInShowName = showName.gsub(/[\._]/, ' ').downcase.split(" ") # strip . and _
-      wordsInShowName.each do |word|
-        if wordsInShowName.index(word) == 0 || /^(in|a|the|and|on)$/i.match(word).nil?
-          word.capitalize!
-        end
-      end
-      wordsInShowName.join(" ").gsub(/\b(us|uk|\d{4})$/i, '(\1)') # adding parens around US/UK marked shows, or shows with years
-    else
-      file_name
-    end
-  end
-
-  def self.is_movie?(file_name)
-    unless /^(.*).(\d{4}|dvdrip)/i.match(file_name).nil?
-      movie_name = $1
-      nice_movie_name = movie_name.gsub('.', ' ').downcase
-      i = Imdb::Search.new(nice_movie_name)
-      i.movies.size > 0
-    else
-      false
     end
   end
 
