@@ -1,5 +1,4 @@
-require "blitzcrank/version"
-Dir['./lib/*.rb'].each {|f| require f }
+Dir['./lib/blitzcrank/*.rb'].each {|f| require f }
 require "colorize"
 require "yaml"
 

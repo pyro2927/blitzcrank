@@ -12,6 +12,12 @@ class Video
     @file_name
   end
 
+  def original_path
+  end
+
+  def local_path
+  end
+
   def nice_name
     unless TV_SHOW_REGEX.match(@file_name).nil?
       showName = $1
