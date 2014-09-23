@@ -23,5 +23,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency("colorize", "0.6.0")
   spec.add_dependency("imdb", "0.8.0")
+  spec.add_dependency("ruby-configurable", "1.0.2")
 
 end
