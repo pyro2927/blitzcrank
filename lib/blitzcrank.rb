@@ -39,7 +39,7 @@ module Blitzcrank
 
   # get a listing of all remote files that would be considered "videos"
   def self.remote_video_file_list
-      %x[ssh -q #{Blitzcrank.config[:remote_user]}@#{Blitzcrank.config[:remote_host]} "cd #{Blitzcrank.config[:remote_base_dir]} && find . -type f \\( -iname \'*.avi\' -or -iname \'*.mkv\' -or -iname \'*.mp4\' -or -iname \'*.m4v\' -or -iname \'*.divx\' \\)"]
+    %x[ssh -q #{Blitzcrank.config[:remote_user]}@#{Blitzcrank.config[:remote_host]} "cd #{Blitzcrank.config[:remote_base_dir]} && find . -type f \\( -iname \'*.avi\' -or -iname \'*.mkv\' -or -iname \'*.mp4\' -or -iname \'*.m4v\' -or -iname \'*.divx\' \\)"]
   end
 
   def self.file_menu(search_array = nil)
