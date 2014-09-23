@@ -11,7 +11,7 @@ module Blitzcrank
     let(:tv_show_seasons) {['3',
                             '8',
                             '4']}
-    let(:tv_shows) { tv_file_names.map {|f| Video.with_path f } }
+    let(:tv_shows) { tv_file_names.map {|f| TVShow.new f } }
 
     before(:all) do
       Blitzcrank.config.update(base_tv_dir: 'TV/')
