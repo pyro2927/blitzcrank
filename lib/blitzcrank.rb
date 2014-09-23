@@ -32,14 +32,14 @@ module Blitzcrank
 
   def self.transfer_file(remote_path, local_dir)
     puts "Copying #{remote_path} to #{local_dir}"
-    if !Blitzcrank.config[:dry_run]
-      system("rsync -avz #{ '--bwlimit=' + Blitzcrank.config[:bwlimit] unless Blitzcrank.config[:bwlimit].nil? } --progress --rsh='ssh' \"#{Blitzcrank.config[:remote_user]}@#{Blitzcrank.config[:remote_host]}:#{Blitzcrank.config[:remote_base_dir]}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+    if !Blitzcrank.config.dry_run
+      system("rsync -avz #{ '--bwlimit=' + Blitzcrank.config.bwlimit unless Blitzcrank.config.bwlimit.nil? } --progress --rsh='ssh' \"#{Blitzcrank.config.remote_user}@#{Blitzcrank.config.remote_host}:#{Blitzcrank.config.remote_base_dir}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
     end
   end
 
   # get a listing of all remote files that would be considered "videos"
   def self.remote_video_file_list
-    %x[ssh -q #{Blitzcrank.config[:remote_user]}@#{Blitzcrank.config[:remote_host]} "cd #{Blitzcrank.config[:remote_base_dir]} && find . -type f \\( -iname \'*.avi\' -or -iname \'*.mkv\' -or -iname \'*.mp4\' -or -iname \'*.m4v\' -or -iname \'*.divx\' \\)"]
+    %x[ssh -q #{Blitzcrank.config.remote_user}@#{Blitzcrank.config.remote_host} "cd #{Blitzcrank.config.remote_base_dir} && find . -type f \\( -iname \'*.avi\' -or -iname \'*.mkv\' -or -iname \'*.mp4\' -or -iname \'*.m4v\' -or -iname \'*.divx\' \\)"]
   end
 
   def self.file_menu(search_array = nil)
@@ -84,21 +84,21 @@ module Blitzcrank
 
   # any files (hashes) passed into here will be checked against our local TV folders and IMDB to see if it's a movie
   def self.transfer_files(filesToTransfer)
-    Dir.chdir(Blitzcrank.config[:base_tv_dir])
+    Dir.chdir(Blitzcrank.config.base_tv_dir)
 
     filesToTransfer.each do |dh|
-      Dir.chdir(Blitzcrank.config[:base_tv_dir])
+      Dir.chdir(Blitzcrank.config.base_tv_dir)
       full_path = dh[:path]
       file_name = dh[:name]
       video = Video.new file_name
       directories = Dir.glob(video.nice_name, File::FNM_CASEFOLD)
       if directories.count > 0 && video.is_tv_show?
         nice_name = directories.first
-        season_dir = "#{Dir.pwd}/#{nice_name}/#{Blitzcrank.config[:season_identifier]}#{video.season}"
+        season_dir = "#{Dir.pwd}/#{nice_name}/#{Blitzcrank.config.season_identifier}#{video.season}"
         Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
         Blitzcrank.transfer_file(full_path, season_dir)
       elsif video.is_movie?
-        Blitzcrank.transfer_file(full_path, Blitzcrank.config[:base_movie_dir])
+        Blitzcrank.transfer_file(full_path, Blitzcrank.config.base_movie_dir)
       end
     end
   end
