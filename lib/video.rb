@@ -1,7 +1,7 @@
 require "imdb"
 class Video
 
-  TV_SHOW_REGEX = /(.*)\.s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
+  TV_SHOW_REGEX = /(.*)[\. ]s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
   MOVIE_REGEX = /^(.*).(\d{4}|dvdrip)/i
 
   def initialize(file_name)
