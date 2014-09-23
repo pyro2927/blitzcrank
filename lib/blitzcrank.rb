@@ -1,5 +1,6 @@
 require "blitzcrank/version.rb"
-Dir['./lib/*.rb'].each {|f| require f }
+require "./lib/blitzcrank/video.rb"
+Dir['./lib/blitzcrank/*.rb'].each {|f| require f }
 require "colorize"
 require "configurable"
 require "yaml"
@@ -90,7 +91,7 @@ module Blitzcrank
       Dir.chdir(Blitzcrank.config.base_tv_dir)
       full_path = dh[:path]
       file_name = dh[:name]
-      video = Video.new file_name
+      video = Video.with_path file_name
       directories = Dir.glob(video.nice_name, File::FNM_CASEFOLD)
       if directories.count > 0 && video.is_tv_show?
         nice_name = directories.first
