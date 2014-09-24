@@ -1,8 +1,9 @@
-require "blitzcrank/version.rb"
-require "./lib/blitzcrank/video.rb"
-Dir['./lib/blitzcrank/*.rb'].each {|f| require f }
+require "blitzcrank/version"
+require File.join(File.dirname(__FILE__), "blitzcrank/video.rb")
+Dir[File.join(File.dirname(__FILE__), "blitzcrank/*.rb")].each {|f| require f }
 require "colorize"
 require "configurable"
+require "fileutils"
 require "yaml"
 
 module Blitzcrank
@@ -89,6 +90,9 @@ module Blitzcrank
 
     filesToTransfer.each do |dh|
       video = Video.with_path dh[:name]
+      if video.is_tv_show?
+        FileUtils.mkdir_p video.season_path
+      end
       Blitzcrank.transfer_file(video)
     end
   end

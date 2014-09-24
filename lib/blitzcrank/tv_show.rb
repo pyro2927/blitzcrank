@@ -2,11 +2,11 @@ module Blitzcrank
   class TVShow < Video
 
     def season_path
-      Blitzcrank.config.base_tv_dir + Blitzcrank.config.season_identifier + season
+      Blitzcrank.config.base_tv_dir + nice_name + "/" + Blitzcrank.config.season_identifier + season
     end
 
     def local_path
-      season_path + "/" + nice_name
+      season_path + "/" + @file_name
     end
 
     def season
