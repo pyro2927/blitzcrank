@@ -1,8 +1,9 @@
-require "blitzcrank/version.rb"
-require "./lib/blitzcrank/video.rb"
-Dir['./lib/blitzcrank/*.rb'].each {|f| require f }
+require "blitzcrank/version"
+require File.join(File.dirname(__FILE__), "blitzcrank/video.rb")
+Dir[File.join(File.dirname(__FILE__), "blitzcrank/*.rb")].each {|f| require f }
 require "colorize"
 require "configurable"
+require "fileutils"
 require "yaml"
 
 module Blitzcrank
@@ -31,10 +32,10 @@ module Blitzcrank
     IO.write(yaml_path, Blitzcrank.config.to_yaml)
   end
 
-  def self.transfer_file(remote_path, local_dir)
-    puts "Copying #{remote_path} to #{local_dir}"
+  def self.transfer_file(video)
+    puts "Copying #{video.remote_path} to #{video.local_path}"
     if !Blitzcrank.config.dry_run
-      system("rsync -avz #{ '--bwlimit=' + Blitzcrank.config.bwlimit unless Blitzcrank.config.bwlimit.nil? } --progress --rsh='ssh' \"#{Blitzcrank.config.remote_user}@#{Blitzcrank.config.remote_host}:#{Blitzcrank.config.remote_base_dir}#{remote_path.gsub(' ', '\\ ')}\" \"#{local_dir}\"")
+      Rsync.sync(video)
     end
   end
 
@@ -88,19 +89,11 @@ module Blitzcrank
     Dir.chdir(Blitzcrank.config.base_tv_dir)
 
     filesToTransfer.each do |dh|
-      Dir.chdir(Blitzcrank.config.base_tv_dir)
-      full_path = dh[:path]
-      file_name = dh[:name]
-      video = Video.with_path file_name
-      directories = Dir.glob(video.nice_name, File::FNM_CASEFOLD)
-      if directories.count > 0 && video.is_tv_show?
-        nice_name = directories.first
-        season_dir = "#{Dir.pwd}/#{nice_name}/#{Blitzcrank.config.season_identifier}#{video.season}"
-        Dir.mkdir(season_dir) unless Dir.exists?(season_dir) # make the folder if it doesn't exist
-        Blitzcrank.transfer_file(full_path, season_dir)
-      elsif video.is_movie?
-        Blitzcrank.transfer_file(full_path, Blitzcrank.config.base_movie_dir)
+      video = Video.with_path dh[:path]
+      if video.is_tv_show?
+        FileUtils.mkdir_p video.season_path
       end
+      Blitzcrank.transfer_file(video)
     end
   end
 
