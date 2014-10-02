@@ -89,7 +89,7 @@ module Blitzcrank
     Dir.chdir(Blitzcrank.config.base_tv_dir)
 
     filesToTransfer.each do |dh|
-      video = Video.with_path dh[:name]
+      video = Video.with_path dh[:path]
       if video.is_tv_show?
         FileUtils.mkdir_p video.season_path
       end
