@@ -1,4 +1,4 @@
-require './lib/blitzcrank.rb'
+require File.join(File.dirname(__FILE__), "../../lib/blitzcrank.rb")
 
 module Blitzcrank
   describe TVShow do
@@ -38,7 +38,7 @@ module Blitzcrank
 
     it "correctly gets the local path for a TV show" do
       tv_shows.each_with_index do |video, i|
-        expect(video.local_path).to eql("TV/Season #{tv_show_seasons[i]}/#{tv_show_names[i]}")
+        expect(video.local_path).to eql("TV/#{tv_show_names[i]}/Season #{tv_show_seasons[i]}/#{video.file_name}")
       end
     end
 
