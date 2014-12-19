@@ -2,8 +2,8 @@ require "imdb"
 module Blitzcrank
   class Video
 
-    TV_SHOW_REGEX = /(.*)[\. ]s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
-    MOVIE_REGEX = /^(.*).(\d{4}|dvdrip)/i
+    TV_SHOW_REGEX = /(.*?)[\. ]s?(\d{1,2})[ex](\d{2})/i # Supports s01e01, 1x03
+    MOVIE_REGEX = /^(.*?).(\d{4}|dvdrip)/i
 
     def self.with_path(file_path)
       file_name = Video.file_name(file_path)
