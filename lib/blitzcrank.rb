@@ -33,9 +33,13 @@ module Blitzcrank
   end
 
   def self.transfer_file(video)
-    puts "Copying #{video.remote_path} to #{video.local_path}"
-    if !Blitzcrank.config.dry_run
-      Rsync.sync(video)
+    if video.class == Video
+      puts "Unable to find local path for #{video.remote_path}"
+    else
+      puts "Copying #{video.remote_path} to #{video.local_path}"
+      if !Blitzcrank.config.dry_run
+        Rsync.sync(video)
+      end
     end
   end
 
